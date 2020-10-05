@@ -20,7 +20,7 @@ main {
         [avg(numbers)(response) {
             sum = 0.0
             manyNums -> numbers.nums
-            foreach(n : manyNums) {
+            for(n in manyNums) {
                 sum += n
             }
             response = (sum / #manyNums)

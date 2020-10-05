@@ -8,7 +8,7 @@ type TwoNumbers: void {
 
 // type IManyNumbers: void {
 type ManyNumbers: void {
-    .nums*: double
+    .nums[0,*]: double
 }
 
 // type ManyNumbers: IManyNumbers

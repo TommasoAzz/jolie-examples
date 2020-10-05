@@ -11,6 +11,9 @@ main {
     // Set up for input
     registerForInput@Console()()
 
+    // Header
+    println@Console("Simple calculator\n")()
+
     // Input number 1
     print@Console("Insert num1: ")()
     in(cin)
@@ -29,6 +32,7 @@ main {
     prod@CalcOutput(numbers)(prodResponse)
     avg@CalcOutput(avgNumbers)(avgResponse)
 
+    println@Console("Results\n")()
     println@Console("Sum: " + sumResponse)()
     println@Console("Product: " + prodResponse)()
     println@Console("Average: " + avgResponse)()
