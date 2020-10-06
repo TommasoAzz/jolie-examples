@@ -1,29 +1,58 @@
 include "calculator.iol"
 include "console.iol"
 
+// Execution can be:
+// - "single" (one shot, then it shuts down);
+// - "concurrent" (can elaborate concurrent requests);
+// - "sequential" (can elaborate requests one after one other).
+execution{ concurrent }
+
 inputPort CalcInput {
 Location: "socket://localhost:8000"
 Protocol: sodep
 Interfaces: Calculator
 }
 
+init {
+    println@Console("Simple Calculator service is running...")()
+}
+
 main {
-    while(true) {
-        [sum(numbers)(response) {
-            response = numbers.num1 + numbers.num2
-        }]
+    [sum(numbers)(response) {
+        println@Console("Sum request of the following numbers: " + numbers.num1 + ", " + numbers.num2 + ".")()
+        response = numbers.num1 + numbers.num2
+    }]
 
-        [prod(numbers)(response) {
-            response = numbers.num1 * numbers.num2
-        }]
+    [prod(numbers)(response) {
+        println@Console("Product request of the following numbers: " + numbers.num1 + ", " + numbers.num2 + ".")()
+        response = numbers.num1 * numbers.num2
+    }]
 
-        [avg(numbers)(response) {
-            sum = 0.0
+    [avg(numbers)(response) {
+        print@Console("Average request of the following " + #numbers.nums + " numbers: ")()
+        if(#numbers.nums > 0) {
             manyNums -> numbers.nums
+            // Printing manyNums.
+            printArray 
+
+            // Calculation of the average.
+            sum = 0.0
             for(n in manyNums) {
-                sum += n
+                sum += (n / #manyNums)
             }
-            response = (sum / #manyNums)
-        }]
+            response = sum
+        } else {
+            print@Console("0 items received.\n")()
+            response = 0
+        }
+    }]
+}
+
+// An object named manyNums must be declared before the invoking this procedure.
+define printArray {
+    print@Console(manyNums[0])()
+    for(i = 1, i < #manyNums, i++) {
+        print@Console(", " + manyNums[i])()
     }
+    print@Console("\n")()
 }
