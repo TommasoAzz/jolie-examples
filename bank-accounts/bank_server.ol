@@ -3,7 +3,7 @@ include "console.iol"
 
 
 inputPort BankInput {
-Location: "socket://localhost:8000"
+Location: "socket://localhost:10000"
 Protocol: sodep
 Interfaces: Bank
 }
@@ -23,10 +23,13 @@ main {
     login(loginRequest)(loginResponse){
 		username = loginRequest.username
         password = loginRequest.password
-        balance = 0.0
-		loginResponse.sid = csets.sid = new;
+        loginResponse.sid = csets.sid = new;
+        if(!is_defined(global.bankRecords.(username).balance)) {
+            global.bankRecords.(username).password = password
+            global.bankRecords.(username).balance = 0.0
+        }
         loginResponse.success = true
-		loginResponse.message = "You are correctly logged in."
+        loginResponse.message = "You are correctly logged in."
 	};
 
 	while(keepRunning) {
@@ -40,14 +43,16 @@ main {
 
         [withdrawal(withdrawalRequest)(withdrawalResponse) {
             println@Console("User with username: " + username + " has requested a withdrawal.")()
-            if(balance < withdrawalRequest.cashAmount) {
+            if(global.bankRecords.(username).balance < withdrawalRequest.cashAmount) {
                 withdrawalResponse.errors = true
-                withdrawalResponse.newBalance = balance
+                withdrawalResponse.newBalance = global.bankRecords.(username).balance
                 withdrawalResponse.message = "Your balance is smaller than the amount of cash you requested to withdraw."
             } else {
-                balance -= withdrawalRequest.cashAmount
+                synchronized(username) {
+                    global.bankRecords.(username).balance -= withdrawalRequest.cashAmount
+                }
                 withdrawalResponse.errors = false
-                withdrawalResponse.newBalance = balance
+                withdrawalResponse.newBalance = global.bankRecords.(username).balance
                 withdrawalResponse.message = "Here are your " + withdrawalRequest.cashAmount + " euros you requested."
             }
         }] {
@@ -58,12 +63,14 @@ main {
             println@Console("User with username: " + username + " has requested a deposit.")()
             if(depositRequest.cashAmount <= 0.0) {
                 depositResponse.errors = true
-                depositResponse.newBalance = balance
+                depositResponse.newBalance = global.bankRecords.(username).balance
                 depositResponse.message = "You cannot deposit 0 or less euros."
             } else {
-                balance += depositRequest.cashAmount
+                synchronized(username) {
+                    global.bankRecords.(username).balance += depositRequest.cashAmount
+                }
                 depositResponse.errors = false
-                depositResponse.newBalance = balance
+                depositResponse.newBalance = global.bankRecords.(username).balance
                 depositResponse.message = "Money deposited successfully."
             }
         }] {
@@ -72,7 +79,7 @@ main {
 
         [accountReport(reportRequest)(reportResponse) {
             println@Console("User with username: " + username + " has requested an account report.")()
-            reportResponse.balance = balance
+            reportResponse.balance = global.bankRecords.(username).balance
             reportResponse.message = "Your current balance is " + reportResponse.balance + " euros."
         }] {
            println@Console(username + " has completed the account report operation.")() 

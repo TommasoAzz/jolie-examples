@@ -4,7 +4,7 @@ include "ui/swing_ui.iol"
 include "bank.iol"
 
 outputPort BankServer {
-	Location: "socket://localhost:8000"
+	Location: "socket://localhost:10000"
 	Protocol: sodep
 	Interfaces: Bank
 }
