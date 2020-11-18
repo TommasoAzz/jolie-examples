@@ -43,8 +43,8 @@ main {
         helpRequest.amount = paymentInfo.price * 0.5
         noticeToSeller.amount = helpRequest.amount
     }
-    askForHelp@HelperOutput(helpRequest)
     willUseHelp@SellerOutput(noticeToSeller)
+    askForHelp@HelperOutput(helpRequest)
 
     if(helpIsRequested) {
         // For simplicity this client allows only the price to be cut in half.
