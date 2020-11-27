@@ -1,6 +1,6 @@
 type WillUseHelpData: void {
     .sid: string
-    .amount?: double
+    .amount: double
 }
 type SendPaymentRequest: void {
     .sid: string
