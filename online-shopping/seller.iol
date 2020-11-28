@@ -19,6 +19,7 @@ type SendPaymentHelpedRequest: void {
 
 type InitPaymentProcessRequest: void {
     .username: string
+    // .dynamicLocation: string
 }
 
 type InitPaymentProcessResponse: void {

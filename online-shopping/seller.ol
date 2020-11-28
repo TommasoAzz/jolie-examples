@@ -44,6 +44,8 @@ init {
 main {
     // Waiting for incoming requests to operation: initPaymentProcess
     initPaymentProcess(userData)(response) {
+        // Dynamic binding of the BuyerOutput.
+        // BuyerOutput.location = userData.dynamicLocation
         username = userData.username
         sessionId = csets.sid = new
         response.sid = sessionId
@@ -51,10 +53,10 @@ main {
         while(rnd == 0.0) {
             random@Math(_)(rnd)
         }
-        productPrice = int(rnd * 100)
+        productPrice = int(rnd * 100) // Cast to int to lose the decimal part.
         payedByBuyerAndOrHelper = 0
         helpRequested = false
-        response.price = productPrice
+        response.price = double(productPrice) // Cast to double to allow double operations.
     };
 
     // Waiting for incoming requests to operation: willUseHelp
@@ -109,13 +111,13 @@ main {
 
     if(payedByBuyerAndOrHelper == productPrice) {
         // This part could be expanded...
-        trackingCode++
+        global.trackingCode++
         index = 0
         if(is_defined(global.shippings.(username))) {
             codesCardindality = #global.shippings.(username)
             index = codesCardindality - 1
         }
-        global.shippings.(username)[index].tracking = "TRK-" + trackingCode
+        global.shippings.(username)[index].tracking = "TRK-" + global.trackingCode
 
         sendItemData.shippingTrackingCode = global.shippings.(username)[index].tracking
     } else {

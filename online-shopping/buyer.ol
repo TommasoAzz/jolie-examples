@@ -1,6 +1,7 @@
 include "console.iol"
 include "ui/ui.iol"
 include "ui/swing_ui.iol"
+include "string_utils.iol"
 include "buyer.iol"
 include "seller.iol"
 include "helper.iol"
@@ -23,12 +24,36 @@ outputPort HelperOutput {
     Interfaces: Helper
 }
 
+constants {
+    NEED_HELP = 0,
+    NOT_NEED_HELP = 1
+}
+
 init {
     println@Console("Online shopping - Buyer is running...")()
 }
 
 main {
-    // The following instrunctions are just dummy instructions.
+    // Checking program arguments
+    // if(#args > 0) {
+    //     matchReq = -> args[0]
+    //     matchReq.regex = "(socket\:\/\/)([a-z]|[0-9]|[\-\.])*\:[0-9]{1,5}"
+    //     match@StringUtils(matchReq)(groups)
+    //     if(groups > 1) {
+    //         userData.dynamicLocation = groups.group[0]
+    //     } else {
+    //         println@Console("The input argument was not a valid location for a service. The service will be halted.")()
+    //         request.status = 0
+    //         halt@Runtime(request)(_)
+    //     }
+    // } else {
+    //     userData.dynamicLocation = "socket://localhost:8000"
+    // }
+
+    // Setting Location of BuyerInput since it is dynamic.
+    // BuyerInput.location = userData.dynamicLocation
+
+    // The following three operations are "dummy".
     // The user is asked to insert a username (which is actually useful for collecting the tracking codes linked to the usernmame),
     // but the price of the product is given by the Seller.
     // No choice what so ever is made for the product.
@@ -45,13 +70,13 @@ main {
     // Initializing all session ids.
     helpRequest.sid = noticeToSeller.sid = productRequest.sid = paymentInfo.sid
     
-    helpIsRequested = userChoice == 0 // 0 means YES, 1 means NO
+    helpIsRequested = userChoice == NEED_HELP
 
     helpRequest.needHelp = helpIsRequested
     noticeToSeller.amount = 0.0 // By default 0.0 means no help is requested
     if(helpIsRequested) {
         // For simplicity this client allows only the price to be cut in half.
-        helpRequest.amount = paymentInfo.price * 0.5
+        helpRequest.amount = double(paymentInfo.price) * 0.5
         noticeToSeller.amount = helpRequest.amount
     };
     {willUseHelp@SellerOutput(noticeToSeller) | askForHelp@HelperOutput(helpRequest)}
@@ -59,12 +84,12 @@ main {
     if(helpIsRequested) {
         println@Console("You requested to be helped by an Helper. The Helper will take care of half the amount.")()
 
-        productRequest.amount = paymentInfo.price * 0.5
+        productRequest.amount = double(paymentInfo.price) * 0.5
         sendPaymentHelped@SellerOutput(productRequest)
     } else {
         println@Console("You did not request to be helped by an Helper. You will take care of the whole amount.")()
         
-        productRequest.amount = paymentInfo.price
+        productRequest.amount = double(paymentInfo.price)
         sendPayment@SellerOutput(productRequest)
     }
 

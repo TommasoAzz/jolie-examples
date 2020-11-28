@@ -18,6 +18,7 @@ proj(C, Seller) = (*initPaymentProcess*@Buyer; (1 | *willUseHelp*@Buyer); *sendP
 proj(C, Helper) = (1; (*askForHelp*@Buyer | 1); 1 + (1 | <span style="text-decoration: overline">*sendPaymentHelper*</span>@Seller); 1 | *close*@Seller)*
 
 ## Operation mappings: formal choreography to Jolie operations
+- *initPaymentProcess* will be a Seller operation, RequestResponse;
 - *askForHelp* will be a Helper operation, OneWay;
 - *willUseHelp* will be a Seller operation, OneWay;
 - *sendPayment* will be a Seller operation, OneWay;
