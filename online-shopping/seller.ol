@@ -54,7 +54,7 @@ main {
             random@Math(_)(rnd)
         }
         productPrice = int(rnd * 100) // Cast to int to lose the decimal part.
-        payedByBuyerAndOrHelper = 0
+        payedByBuyerAndOrHelper = 0.0
         helpRequested = false
         response.price = double(productPrice) // Cast to double to allow double operations.
     };
@@ -106,8 +106,6 @@ main {
     closeData.sid = sessionId
     closeData.errors = false
     closeData.message = "The product was shipped and the tracking code was sent to the Buyer."
-
-    println@Console("Session id is still: " + closeData.sid)()
 
     if(payedByBuyerAndOrHelper == productPrice) {
         // This part could be expanded...

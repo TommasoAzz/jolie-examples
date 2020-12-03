@@ -2,7 +2,7 @@ include "console.iol"
 include "helper.iol"
 include "seller.iol"
 
-// execution{ concurrent }
+execution{ concurrent }
 
 inputPort HelperInput {
     Location: "socket://localhost:8200"
@@ -16,6 +16,16 @@ outputPort SellerOutput {
     Interfaces: Seller
 }
 
+cset {
+	sid: WillUseHelpData.sid
+         SendPaymentRequest.sid
+         SendPaymentHelperRequest.sid
+         SendPaymentHelpedRequest.sid
+         InitPaymentProcessResponse.sid
+         AskForHelpData.sid
+         CloseData.sid
+}
+
 init {
     println@Console("Online shopping - Helper is running...")()
 }
@@ -27,7 +37,7 @@ main {
     // --- //
     if(askForHelpData.needHelp) {
         println@Console("The Buyer requested help.")()
-        sendPaymentHelperRequest.sid = askForHelpData.sid
+        sendPaymentHelperRequest.sid = csets.sid = askForHelpData.sid
         sendPaymentHelperRequest.amount = askForHelpData.amount
         sendPaymentHelper@SellerOutput(sendPaymentHelperRequest)
         println@Console("A total amount of " + askForHelpData.amount + " was given to the Seller for helping the Buyer.")()

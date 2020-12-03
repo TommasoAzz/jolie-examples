@@ -67,16 +67,21 @@ main {
     // The user is asked if it needs help buying the product or not.
     print@Console("The price of the product is " + paymentInfo.price + ". Do you need help paying for it [y/n]? ")()
 
-    in(userChoice)
-    if(userChoice != "y" && userChoice != "n") {
-        print@Console("You typed " + userChoice + ". Correct choice is either \"y\" or \"n\": ")()
-        in(userChoice)
+    in(strUserChoice)
+    if(strUserChoice != "y" && strUserChoice != "n") {
+        print@Console("You typed " + strUserChoice + ". Correct choice is either \"y\" or \"n\": ")()
+        in(strUserChoice)
+    }
+    if(strUserChoice == "y") {
+        userChoice = NEED_HELP
+    } else {
+        userChoice = NOT_NEED_HELP
     }
 
     // Initializing all session ids.
     helpRequest.sid = noticeToSeller.sid = productRequest.sid = paymentInfo.sid
     
-    helpIsRequested = userChoice == NEED_HELP
+    helpIsRequested = (userChoice == NEED_HELP)
 
     helpRequest.needHelp = helpIsRequested
     noticeToSeller.amount = 0.0 // By default 0.0 means no help is requested
