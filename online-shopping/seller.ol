@@ -61,7 +61,7 @@ main {
 
     // Waiting for incoming requests to operation: willUseHelp
     willUseHelp(willUseHelpData)
-    println@Console("Invoked operation \"willUseHelp\".")()
+    println@Console("\nInvoked operation \"willUseHelp\".")()
     // --- //
     helpRequested = (willUseHelpData.amount > 0.0)
 
@@ -74,7 +74,7 @@ main {
     if(helpRequested) {
         // Waiting for incoming requests to operations: sendPaymentHelped and sendPaymentHelper in parallel
         {sendPaymentHelped(sendPaymentHelpedRequest)
-            println@Console("Invoked operation \"sendPaymentHelped\".")()
+            println@Console("\nInvoked operation \"sendPaymentHelped\".")()
             // --- //
             println@Console("Buyer with sid=" + sessionId + " have just paid " + sendPaymentHelpedRequest.amount + " for the product.")()
         
@@ -84,7 +84,7 @@ main {
         }
         |
         {sendPaymentHelper(sendPaymentHelperRequest)
-            println@Console("Invoked operation \"sendPaymentHelper\".")()
+            println@Console("\nInvoked operation \"sendPaymentHelper\".")()
             // --- //
             println@Console("Helper with sid=" + sessionId + " have just paid " + sendPaymentHelperRequest.amount + " for the product.")()
 
@@ -95,7 +95,7 @@ main {
     } else {
         // Waiting for incoming requests to operation: sendPayment
         sendPayment(sendPaymentRequest)
-        println@Console("Invoked operation \"sendPayment\".")()
+        println@Console("\nInvoked operation \"sendPayment\".")()
         // --- //
         payedByBuyerAndOrHelper += sendPaymentRequest.amount  
     }

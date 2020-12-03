@@ -2,7 +2,7 @@ include "console.iol"
 include "helper.iol"
 include "seller.iol"
 
-execution{ concurrent }
+// execution{ concurrent }
 
 inputPort HelperInput {
     Location: "socket://localhost:8200"
@@ -23,7 +23,7 @@ init {
 main {
     // Waiting for incoming requests to operation: askForHelp
     askForHelp(askForHelpData)
-    println@Console("Invoked operation \"askForHelp\".")()
+    println@Console("\nInvoked operation \"askForHelp\".")()
     // --- //
     if(askForHelpData.needHelp) {
         println@Console("The Buyer requested help.")()
@@ -37,7 +37,7 @@ main {
 
     // Waiting for incoming requests to operation: close
     close(closeData)
-    println@Console("Invoked operation \"close\".")()
+    println@Console("\nInvoked operation \"close\".")()
     // --- //
     if(closeData.errors) {
         println@Console(closeData.message)()

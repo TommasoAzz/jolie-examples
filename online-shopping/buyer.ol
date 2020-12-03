@@ -1,6 +1,4 @@
 include "console.iol"
-include "ui/ui.iol"
-include "ui/swing_ui.iol"
 include "string_utils.iol"
 include "buyer.iol"
 include "seller.iol"
@@ -31,6 +29,9 @@ constants {
 
 init {
     println@Console("Online shopping - Buyer is running...")()
+
+    // Set up for input.
+    registerForInput@Console()()
 }
 
 main {
@@ -57,15 +58,20 @@ main {
     // The user is asked to insert a username (which is actually useful for collecting the tracking codes linked to the usernmame),
     // but the price of the product is given by the Seller.
     // No choice what so ever is made for the product.
-    // Moreover, this showInputDialog operation could be exchanged with something else (CLI input for example).
-    showInputDialog@SwingUI("Insert your username:")(userData.username)
+    print@Console("Insert your username: ")()
+    in(userData.username)
     
     // Initializing the session and requesting the price of the product.
     initPaymentProcess@SellerOutput(userData)(paymentInfo)
 
     // The user is asked if it needs help buying the product or not.
-    // Again, this is just a dummy question to try the system and moreover the showYesNoQuestionDialog operation could be also changed to a CLI input.
-    showYesNoQuestionDialog@SwingUI("The price of the product is " + paymentInfo.price + ". Do you need help paying for it?")(userChoice)
+    print@Console("The price of the product is " + paymentInfo.price + ". Do you need help paying for it [y/n]? ")()
+
+    in(userChoice)
+    if(userChoice != "y" && userChoice != "n") {
+        print@Console("You typed " + userChoice + ". Correct choice is either \"y\" or \"n\": ")()
+        in(userChoice)
+    }
 
     // Initializing all session ids.
     helpRequest.sid = noticeToSeller.sid = productRequest.sid = paymentInfo.sid
@@ -95,7 +101,7 @@ main {
 
     // Waiting for incoming requests to operation: sendItem
     sendItem(sendItemData)
-    println@Console("Invoked operation \"willUseHelp\".")()
+    println@Console("\nInvoked operation \"sendItem\".")()
     // --- //
     if(sendItemData.errors) {
         println@Console("There was an error processing the request: " + sendItemData.message)()
