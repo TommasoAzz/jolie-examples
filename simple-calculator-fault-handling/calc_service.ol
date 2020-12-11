@@ -17,7 +17,8 @@ init {
     println@Console("Simple Calculator service is running...")()
 
     install(
-        IOException => println@Console("The client has disconnected.")()
+        IOException => println@Console("The client has disconnected.")(),
+        DivisionByZero => println@Console("Division by 0 is not possible!")()
     )
 }
 
@@ -33,18 +34,11 @@ main {
     }]
 
     [idiv(numbers)(response) {
-        scope(idiv_scope) {
-            install(
-                DivisionByZero => 
-                    println@Console("Division by 0 is not possible!")()
-                    throw(DivisionByZero)
-            )
-            println@Console("Integer division request of the following numbers: " + numbers.num1 + ", " + numbers.num2 + ".")()
-            if(numbers.num2 == 0) {
-                throw(DivisionByZero)
-            }
-            response = numbers.num1 / numbers.num2
+        println@Console("Integer division request of the following numbers: " + numbers.num1 + ", " + numbers.num2 + ".")()
+        if(numbers.num2 == 0) {
+            throw(DivisionByZero)
         }
+        response = numbers.num1 / numbers.num2
     }]
 
     [avg(numbers)(response) {
